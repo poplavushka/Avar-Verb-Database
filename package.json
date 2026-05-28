@@ -1,0 +1,30 @@
+{
+  "name": "avar-verbal-database",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "data:column-map": "python3 scripts/build_normalized_column_map.py public/data/verbal_database.csv --out data/normalized-column-map.json",
+    "data:rows": "python3 scripts/normalize_csv_rows.py public/data/verbal_database.csv --out data/normalized-rows.json",
+    "data:entries": "python3 scripts/build_grouped_entries.py data/normalized-rows.json --out data/grouped-entries.json",
+    "data:preprocess": "python3 scripts/build_preprocessed_dataset.py data/grouped-entries.json --out public/data/verbal_database.json",
+    "data:build": "npm run data:column-map && npm run data:rows && npm run data:entries && npm run data:preprocess",
+    "dev": "vite",
+    "prebuild": "npm run data:build",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.5.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}

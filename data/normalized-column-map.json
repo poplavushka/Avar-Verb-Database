@@ -1,0 +1,993 @@
+{
+  "inputCsv": "/Users/poplavushka/Documents/avar verb database/public/data/verbal_database.csv",
+  "headerCount": 70,
+  "fields": [
+    {
+      "index": 0,
+      "logicalKey": "source",
+      "actualHeader": "source",
+      "canonicalHeader": "source"
+    },
+    {
+      "index": 1,
+      "logicalKey": "stem",
+      "actualHeader": "stem",
+      "canonicalHeader": "stem"
+    },
+    {
+      "index": 2,
+      "logicalKey": "theme_vowel",
+      "actualHeader": "theme vowel",
+      "canonicalHeader": "theme vowel"
+    },
+    {
+      "index": 3,
+      "logicalKey": "verb_class",
+      "actualHeader": "verb class",
+      "canonicalHeader": "verb class"
+    },
+    {
+      "index": 4,
+      "logicalKey": "stem0",
+      "actualHeader": "stem0",
+      "canonicalHeader": "stem0"
+    },
+    {
+      "index": 5,
+      "logicalKey": "stem1",
+      "actualHeader": "stem1",
+      "canonicalHeader": "stem1"
+    },
+    {
+      "index": 6,
+      "logicalKey": "stem2",
+      "actualHeader": "stem2",
+      "canonicalHeader": "stem2"
+    },
+    {
+      "index": 7,
+      "logicalKey": "stem_type",
+      "actualHeader": "stem type",
+      "canonicalHeader": "stem type"
+    },
+    {
+      "index": 8,
+      "logicalKey": "stem_notes",
+      "actualHeader": "stem notes",
+      "canonicalHeader": "stem notes"
+    },
+    {
+      "index": 9,
+      "logicalKey": "accent_paradigm",
+      "actualHeader": "accent paradigm",
+      "canonicalHeader": "accent paradigm"
+    },
+    {
+      "index": 10,
+      "logicalKey": "phonological_structure",
+      "actualHeader": "phonological structure",
+      "canonicalHeader": "phonological structure"
+    },
+    {
+      "index": 11,
+      "logicalKey": "phonological_structure_unaccented",
+      "actualHeader": "phonological structure unaccented",
+      "canonicalHeader": "phonological structure unaccented"
+    },
+    {
+      "index": 12,
+      "logicalKey": "principle_parts",
+      "actualHeader": "principle parts",
+      "canonicalHeader": "principle parts"
+    },
+    {
+      "index": 13,
+      "logicalKey": "unaccented_principle_parts",
+      "actualHeader": "unaccented principle parts",
+      "canonicalHeader": "unaccented principle parts"
+    },
+    {
+      "index": 14,
+      "logicalKey": "infinitive",
+      "actualHeader": "infinitive",
+      "canonicalHeader": "infinitive"
+    },
+    {
+      "index": 15,
+      "logicalKey": "presence",
+      "actualHeader": "presence",
+      "canonicalHeader": "presence"
+    },
+    {
+      "index": 16,
+      "logicalKey": "future",
+      "actualHeader": "future",
+      "canonicalHeader": "future"
+    },
+    {
+      "index": 17,
+      "logicalKey": "aorist",
+      "actualHeader": "aorist",
+      "canonicalHeader": "aorist"
+    },
+    {
+      "index": 18,
+      "logicalKey": "imperative",
+      "actualHeader": "imperative",
+      "canonicalHeader": "imperative"
+    },
+    {
+      "index": 19,
+      "logicalKey": "masdar",
+      "actualHeader": "masdar",
+      "canonicalHeader": "masdar"
+    },
+    {
+      "index": 20,
+      "logicalKey": "agreement_slot",
+      "actualHeader": "agreement_slot",
+      "canonicalHeader": "agreement_slot"
+    },
+    {
+      "index": 21,
+      "logicalKey": "verb_formation",
+      "actualHeader": "vеrb formаtion",
+      "canonicalHeader": "verb formation"
+    },
+    {
+      "index": 22,
+      "logicalKey": "verb_formation_stem",
+      "actualHeader": "verb formation stеm",
+      "canonicalHeader": "verb formation stem"
+    },
+    {
+      "index": 23,
+      "logicalKey": "pos_verb_formation_stem",
+      "actualHeader": "pos_verb formation stem",
+      "canonicalHeader": "pos_verb formation stem"
+    },
+    {
+      "index": 24,
+      "logicalKey": "formation_stem_does_not_match",
+      "actualHeader": "formation stem does not match",
+      "canonicalHeader": "formation stem does not match"
+    },
+    {
+      "index": 25,
+      "logicalKey": "variation",
+      "actualHeader": "variation",
+      "canonicalHeader": "variation"
+    },
+    {
+      "index": 26,
+      "logicalKey": "causative",
+      "actualHeader": "cаusаtivе",
+      "canonicalHeader": "causative"
+    },
+    {
+      "index": 27,
+      "logicalKey": "full_reduplication",
+      "actualHeader": "full rеduplicаtion",
+      "canonicalHeader": "full reduplication"
+    },
+    {
+      "index": 28,
+      "logicalKey": "d_reduplication",
+      "actualHeader": "d-rеduplicаtion",
+      "canonicalHeader": "d-reduplication"
+    },
+    {
+      "index": 29,
+      "logicalKey": "reduplicated_p_to_d",
+      "actualHeader": "rеduplicаtеd + р > д",
+      "canonicalHeader": "reduplicated + p > d"
+    },
+    {
+      "index": 30,
+      "logicalKey": "reduplicated_l_to_d",
+      "actualHeader": "rеduplicаtеd + л > д",
+      "canonicalHeader": "reduplicated + l > d"
+    },
+    {
+      "index": 31,
+      "logicalKey": "reduplicated_m_to_d",
+      "actualHeader": "rеduplicаtеd + м > д",
+      "canonicalHeader": "reduplicated + m > d"
+    },
+    {
+      "index": 32,
+      "logicalKey": "durative_aqd",
+      "actualHeader": "durative -aqd",
+      "canonicalHeader": "durative -aqd"
+    },
+    {
+      "index": 33,
+      "logicalKey": "durative_d",
+      "actualHeader": "durative -d",
+      "canonicalHeader": "durative -d"
+    },
+    {
+      "index": 34,
+      "logicalKey": "durative_ar",
+      "actualHeader": "durative -ar",
+      "canonicalHeader": "durative -ar"
+    },
+    {
+      "index": 35,
+      "logicalKey": "durative_anq",
+      "actualHeader": "durative -anq",
+      "canonicalHeader": "durative -anq"
+    },
+    {
+      "index": 36,
+      "logicalKey": "durative_ar_d",
+      "actualHeader": "durative -ar-d",
+      "canonicalHeader": "durative -ar-d"
+    },
+    {
+      "index": 37,
+      "logicalKey": "durative_d_ar",
+      "actualHeader": "durative -d-ar",
+      "canonicalHeader": "durative -d-ar"
+    },
+    {
+      "index": 38,
+      "logicalKey": "durative_old",
+      "actualHeader": "durative -old",
+      "canonicalHeader": "durative -old"
+    },
+    {
+      "index": 39,
+      "logicalKey": "ablaut_i_to_e",
+      "actualHeader": "ablaut i > e",
+      "canonicalHeader": "ablaut i > e"
+    },
+    {
+      "index": 40,
+      "logicalKey": "ablaut_u_to_e",
+      "actualHeader": "ablaut u > e",
+      "canonicalHeader": "ablaut u > e"
+    },
+    {
+      "index": 41,
+      "logicalKey": "definition",
+      "actualHeader": "definition",
+      "canonicalHeader": "definition"
+    },
+    {
+      "index": 42,
+      "logicalKey": "example_imperative",
+      "actualHeader": "example imperative",
+      "canonicalHeader": "example imperative"
+    },
+    {
+      "index": 43,
+      "logicalKey": "id_definition",
+      "actualHeader": "id_definition",
+      "canonicalHeader": "id_definition"
+    },
+    {
+      "index": 44,
+      "logicalKey": "done",
+      "actualHeader": "done",
+      "canonicalHeader": "done"
+    },
+    {
+      "index": 45,
+      "logicalKey": "x",
+      "actualHeader": "X",
+      "canonicalHeader": "x"
+    },
+    {
+      "index": 46,
+      "logicalKey": "y",
+      "actualHeader": "Y",
+      "canonicalHeader": "y"
+    },
+    {
+      "index": 47,
+      "logicalKey": "z",
+      "actualHeader": "Z",
+      "canonicalHeader": "z"
+    },
+    {
+      "index": 48,
+      "logicalKey": "x2",
+      "actualHeader": "X2",
+      "canonicalHeader": "x2"
+    },
+    {
+      "index": 49,
+      "logicalKey": "y2",
+      "actualHeader": "Y2",
+      "canonicalHeader": "y2"
+    },
+    {
+      "index": 50,
+      "logicalKey": "z2",
+      "actualHeader": "Z2",
+      "canonicalHeader": "z2"
+    },
+    {
+      "index": 51,
+      "logicalKey": "x3",
+      "actualHeader": "X3",
+      "canonicalHeader": "x3"
+    },
+    {
+      "index": 52,
+      "logicalKey": "y3",
+      "actualHeader": "Y3",
+      "canonicalHeader": "y3"
+    },
+    {
+      "index": 53,
+      "logicalKey": "z3",
+      "actualHeader": "Z3",
+      "canonicalHeader": "z3"
+    },
+    {
+      "index": 54,
+      "logicalKey": "lability",
+      "actualHeader": "lability",
+      "canonicalHeader": "lability"
+    },
+    {
+      "index": 55,
+      "logicalKey": "transitivity",
+      "actualHeader": "transitivity",
+      "canonicalHeader": "transitivity"
+    },
+    {
+      "index": 56,
+      "logicalKey": "light_verb",
+      "actualHeader": "light verb",
+      "canonicalHeader": "light verb"
+    },
+    {
+      "index": 57,
+      "logicalKey": "context",
+      "actualHeader": "context",
+      "canonicalHeader": "context"
+    },
+    {
+      "index": 58,
+      "logicalKey": "context_ru",
+      "actualHeader": "context_ru",
+      "canonicalHeader": "context_ru"
+    },
+    {
+      "index": 59,
+      "logicalKey": "example_source_1",
+      "actualHeader": "example_source",
+      "canonicalHeader": "example_source"
+    },
+    {
+      "index": 60,
+      "logicalKey": "meaning_ru",
+      "actualHeader": "mеаning_ru",
+      "canonicalHeader": "meaning_ru"
+    },
+    {
+      "index": 61,
+      "logicalKey": "reference",
+      "actualHeader": "rеfеrеncе",
+      "canonicalHeader": "reference"
+    },
+    {
+      "index": 62,
+      "logicalKey": "notes",
+      "actualHeader": "notеs",
+      "canonicalHeader": "notes"
+    },
+    {
+      "index": 63,
+      "logicalKey": "comments",
+      "actualHeader": "commеnts",
+      "canonicalHeader": "comments"
+    },
+    {
+      "index": 64,
+      "logicalKey": "context2",
+      "actualHeader": "context2",
+      "canonicalHeader": "context2"
+    },
+    {
+      "index": 65,
+      "logicalKey": "context2_ru",
+      "actualHeader": "context2_ru",
+      "canonicalHeader": "context2_ru"
+    },
+    {
+      "index": 66,
+      "logicalKey": "example_source_2",
+      "actualHeader": "еxаmplе_sourcе",
+      "canonicalHeader": "example_source"
+    },
+    {
+      "index": 67,
+      "logicalKey": "context3",
+      "actualHeader": "context3",
+      "canonicalHeader": "context3"
+    },
+    {
+      "index": 68,
+      "logicalKey": "context3_ru",
+      "actualHeader": "context3_ru",
+      "canonicalHeader": "context3_ru"
+    },
+    {
+      "index": 69,
+      "logicalKey": "example_source_3",
+      "actualHeader": "еxаmplе_sourcе",
+      "canonicalHeader": "example_source"
+    }
+  ],
+  "logicalFieldMap": {
+    "source": {
+      "index": 0,
+      "actualHeader": "source",
+      "canonicalHeader": "source"
+    },
+    "stem": {
+      "index": 1,
+      "actualHeader": "stem",
+      "canonicalHeader": "stem"
+    },
+    "theme_vowel": {
+      "index": 2,
+      "actualHeader": "theme vowel",
+      "canonicalHeader": "theme vowel"
+    },
+    "verb_class": {
+      "index": 3,
+      "actualHeader": "verb class",
+      "canonicalHeader": "verb class"
+    },
+    "stem0": {
+      "index": 4,
+      "actualHeader": "stem0",
+      "canonicalHeader": "stem0"
+    },
+    "stem1": {
+      "index": 5,
+      "actualHeader": "stem1",
+      "canonicalHeader": "stem1"
+    },
+    "stem2": {
+      "index": 6,
+      "actualHeader": "stem2",
+      "canonicalHeader": "stem2"
+    },
+    "stem_type": {
+      "index": 7,
+      "actualHeader": "stem type",
+      "canonicalHeader": "stem type"
+    },
+    "stem_notes": {
+      "index": 8,
+      "actualHeader": "stem notes",
+      "canonicalHeader": "stem notes"
+    },
+    "accent_paradigm": {
+      "index": 9,
+      "actualHeader": "accent paradigm",
+      "canonicalHeader": "accent paradigm"
+    },
+    "phonological_structure": {
+      "index": 10,
+      "actualHeader": "phonological structure",
+      "canonicalHeader": "phonological structure"
+    },
+    "phonological_structure_unaccented": {
+      "index": 11,
+      "actualHeader": "phonological structure unaccented",
+      "canonicalHeader": "phonological structure unaccented"
+    },
+    "principle_parts": {
+      "index": 12,
+      "actualHeader": "principle parts",
+      "canonicalHeader": "principle parts"
+    },
+    "unaccented_principle_parts": {
+      "index": 13,
+      "actualHeader": "unaccented principle parts",
+      "canonicalHeader": "unaccented principle parts"
+    },
+    "infinitive": {
+      "index": 14,
+      "actualHeader": "infinitive",
+      "canonicalHeader": "infinitive"
+    },
+    "presence": {
+      "index": 15,
+      "actualHeader": "presence",
+      "canonicalHeader": "presence"
+    },
+    "future": {
+      "index": 16,
+      "actualHeader": "future",
+      "canonicalHeader": "future"
+    },
+    "aorist": {
+      "index": 17,
+      "actualHeader": "aorist",
+      "canonicalHeader": "aorist"
+    },
+    "imperative": {
+      "index": 18,
+      "actualHeader": "imperative",
+      "canonicalHeader": "imperative"
+    },
+    "masdar": {
+      "index": 19,
+      "actualHeader": "masdar",
+      "canonicalHeader": "masdar"
+    },
+    "agreement_slot": {
+      "index": 20,
+      "actualHeader": "agreement_slot",
+      "canonicalHeader": "agreement_slot"
+    },
+    "verb_formation": {
+      "index": 21,
+      "actualHeader": "vеrb formаtion",
+      "canonicalHeader": "verb formation"
+    },
+    "verb_formation_stem": {
+      "index": 22,
+      "actualHeader": "verb formation stеm",
+      "canonicalHeader": "verb formation stem"
+    },
+    "pos_verb_formation_stem": {
+      "index": 23,
+      "actualHeader": "pos_verb formation stem",
+      "canonicalHeader": "pos_verb formation stem"
+    },
+    "formation_stem_does_not_match": {
+      "index": 24,
+      "actualHeader": "formation stem does not match",
+      "canonicalHeader": "formation stem does not match"
+    },
+    "variation": {
+      "index": 25,
+      "actualHeader": "variation",
+      "canonicalHeader": "variation"
+    },
+    "causative": {
+      "index": 26,
+      "actualHeader": "cаusаtivе",
+      "canonicalHeader": "causative"
+    },
+    "full_reduplication": {
+      "index": 27,
+      "actualHeader": "full rеduplicаtion",
+      "canonicalHeader": "full reduplication"
+    },
+    "d_reduplication": {
+      "index": 28,
+      "actualHeader": "d-rеduplicаtion",
+      "canonicalHeader": "d-reduplication"
+    },
+    "reduplicated_p_to_d": {
+      "index": 29,
+      "actualHeader": "rеduplicаtеd + р > д",
+      "canonicalHeader": "reduplicated + p > d"
+    },
+    "reduplicated_l_to_d": {
+      "index": 30,
+      "actualHeader": "rеduplicаtеd + л > д",
+      "canonicalHeader": "reduplicated + l > d"
+    },
+    "reduplicated_m_to_d": {
+      "index": 31,
+      "actualHeader": "rеduplicаtеd + м > д",
+      "canonicalHeader": "reduplicated + m > d"
+    },
+    "durative_aqd": {
+      "index": 32,
+      "actualHeader": "durative -aqd",
+      "canonicalHeader": "durative -aqd"
+    },
+    "durative_d": {
+      "index": 33,
+      "actualHeader": "durative -d",
+      "canonicalHeader": "durative -d"
+    },
+    "durative_ar": {
+      "index": 34,
+      "actualHeader": "durative -ar",
+      "canonicalHeader": "durative -ar"
+    },
+    "durative_anq": {
+      "index": 35,
+      "actualHeader": "durative -anq",
+      "canonicalHeader": "durative -anq"
+    },
+    "durative_ar_d": {
+      "index": 36,
+      "actualHeader": "durative -ar-d",
+      "canonicalHeader": "durative -ar-d"
+    },
+    "durative_d_ar": {
+      "index": 37,
+      "actualHeader": "durative -d-ar",
+      "canonicalHeader": "durative -d-ar"
+    },
+    "durative_old": {
+      "index": 38,
+      "actualHeader": "durative -old",
+      "canonicalHeader": "durative -old"
+    },
+    "ablaut_i_to_e": {
+      "index": 39,
+      "actualHeader": "ablaut i > e",
+      "canonicalHeader": "ablaut i > e"
+    },
+    "ablaut_u_to_e": {
+      "index": 40,
+      "actualHeader": "ablaut u > e",
+      "canonicalHeader": "ablaut u > e"
+    },
+    "definition": {
+      "index": 41,
+      "actualHeader": "definition",
+      "canonicalHeader": "definition"
+    },
+    "example_imperative": {
+      "index": 42,
+      "actualHeader": "example imperative",
+      "canonicalHeader": "example imperative"
+    },
+    "id_definition": {
+      "index": 43,
+      "actualHeader": "id_definition",
+      "canonicalHeader": "id_definition"
+    },
+    "done": {
+      "index": 44,
+      "actualHeader": "done",
+      "canonicalHeader": "done"
+    },
+    "x": {
+      "index": 45,
+      "actualHeader": "X",
+      "canonicalHeader": "x"
+    },
+    "y": {
+      "index": 46,
+      "actualHeader": "Y",
+      "canonicalHeader": "y"
+    },
+    "z": {
+      "index": 47,
+      "actualHeader": "Z",
+      "canonicalHeader": "z"
+    },
+    "x2": {
+      "index": 48,
+      "actualHeader": "X2",
+      "canonicalHeader": "x2"
+    },
+    "y2": {
+      "index": 49,
+      "actualHeader": "Y2",
+      "canonicalHeader": "y2"
+    },
+    "z2": {
+      "index": 50,
+      "actualHeader": "Z2",
+      "canonicalHeader": "z2"
+    },
+    "x3": {
+      "index": 51,
+      "actualHeader": "X3",
+      "canonicalHeader": "x3"
+    },
+    "y3": {
+      "index": 52,
+      "actualHeader": "Y3",
+      "canonicalHeader": "y3"
+    },
+    "z3": {
+      "index": 53,
+      "actualHeader": "Z3",
+      "canonicalHeader": "z3"
+    },
+    "lability": {
+      "index": 54,
+      "actualHeader": "lability",
+      "canonicalHeader": "lability"
+    },
+    "transitivity": {
+      "index": 55,
+      "actualHeader": "transitivity",
+      "canonicalHeader": "transitivity"
+    },
+    "light_verb": {
+      "index": 56,
+      "actualHeader": "light verb",
+      "canonicalHeader": "light verb"
+    },
+    "context": {
+      "index": 57,
+      "actualHeader": "context",
+      "canonicalHeader": "context"
+    },
+    "context_ru": {
+      "index": 58,
+      "actualHeader": "context_ru",
+      "canonicalHeader": "context_ru"
+    },
+    "example_source_1": {
+      "index": 59,
+      "actualHeader": "example_source",
+      "canonicalHeader": "example_source"
+    },
+    "meaning_ru": {
+      "index": 60,
+      "actualHeader": "mеаning_ru",
+      "canonicalHeader": "meaning_ru"
+    },
+    "reference": {
+      "index": 61,
+      "actualHeader": "rеfеrеncе",
+      "canonicalHeader": "reference"
+    },
+    "notes": {
+      "index": 62,
+      "actualHeader": "notеs",
+      "canonicalHeader": "notes"
+    },
+    "comments": {
+      "index": 63,
+      "actualHeader": "commеnts",
+      "canonicalHeader": "comments"
+    },
+    "context2": {
+      "index": 64,
+      "actualHeader": "context2",
+      "canonicalHeader": "context2"
+    },
+    "context2_ru": {
+      "index": 65,
+      "actualHeader": "context2_ru",
+      "canonicalHeader": "context2_ru"
+    },
+    "example_source_2": {
+      "index": 66,
+      "actualHeader": "еxаmplе_sourcе",
+      "canonicalHeader": "example_source"
+    },
+    "context3": {
+      "index": 67,
+      "actualHeader": "context3",
+      "canonicalHeader": "context3"
+    },
+    "context3_ru": {
+      "index": 68,
+      "actualHeader": "context3_ru",
+      "canonicalHeader": "context3_ru"
+    },
+    "example_source_3": {
+      "index": 69,
+      "actualHeader": "еxаmplе_sourcе",
+      "canonicalHeader": "example_source"
+    }
+  },
+  "canonicalHeaderMap": {
+    "source": [
+      "source"
+    ],
+    "stem": [
+      "stem"
+    ],
+    "theme vowel": [
+      "theme vowel"
+    ],
+    "verb class": [
+      "verb class"
+    ],
+    "stem0": [
+      "stem0"
+    ],
+    "stem1": [
+      "stem1"
+    ],
+    "stem2": [
+      "stem2"
+    ],
+    "stem type": [
+      "stem type"
+    ],
+    "stem notes": [
+      "stem notes"
+    ],
+    "accent paradigm": [
+      "accent paradigm"
+    ],
+    "phonological structure": [
+      "phonological structure"
+    ],
+    "phonological structure unaccented": [
+      "phonological structure unaccented"
+    ],
+    "principle parts": [
+      "principle parts"
+    ],
+    "unaccented principle parts": [
+      "unaccented principle parts"
+    ],
+    "infinitive": [
+      "infinitive"
+    ],
+    "presence": [
+      "presence"
+    ],
+    "future": [
+      "future"
+    ],
+    "aorist": [
+      "aorist"
+    ],
+    "imperative": [
+      "imperative"
+    ],
+    "masdar": [
+      "masdar"
+    ],
+    "agreement_slot": [
+      "agreement_slot"
+    ],
+    "verb formation": [
+      "vеrb formаtion"
+    ],
+    "verb formation stem": [
+      "verb formation stеm"
+    ],
+    "pos_verb formation stem": [
+      "pos_verb formation stem"
+    ],
+    "formation stem does not match": [
+      "formation stem does not match"
+    ],
+    "variation": [
+      "variation"
+    ],
+    "causative": [
+      "cаusаtivе"
+    ],
+    "full reduplication": [
+      "full rеduplicаtion"
+    ],
+    "d-reduplication": [
+      "d-rеduplicаtion"
+    ],
+    "reduplicated + p > d": [
+      "rеduplicаtеd + р > д"
+    ],
+    "reduplicated + l > d": [
+      "rеduplicаtеd + л > д"
+    ],
+    "reduplicated + m > d": [
+      "rеduplicаtеd + м > д"
+    ],
+    "durative -aqd": [
+      "durative -aqd"
+    ],
+    "durative -d": [
+      "durative -d"
+    ],
+    "durative -ar": [
+      "durative -ar"
+    ],
+    "durative -anq": [
+      "durative -anq"
+    ],
+    "durative -ar-d": [
+      "durative -ar-d"
+    ],
+    "durative -d-ar": [
+      "durative -d-ar"
+    ],
+    "durative -old": [
+      "durative -old"
+    ],
+    "ablaut i > e": [
+      "ablaut i > e"
+    ],
+    "ablaut u > e": [
+      "ablaut u > e"
+    ],
+    "definition": [
+      "definition"
+    ],
+    "example imperative": [
+      "example imperative"
+    ],
+    "id_definition": [
+      "id_definition"
+    ],
+    "done": [
+      "done"
+    ],
+    "x": [
+      "X"
+    ],
+    "y": [
+      "Y"
+    ],
+    "z": [
+      "Z"
+    ],
+    "x2": [
+      "X2"
+    ],
+    "y2": [
+      "Y2"
+    ],
+    "z2": [
+      "Z2"
+    ],
+    "x3": [
+      "X3"
+    ],
+    "y3": [
+      "Y3"
+    ],
+    "z3": [
+      "Z3"
+    ],
+    "lability": [
+      "lability"
+    ],
+    "transitivity": [
+      "transitivity"
+    ],
+    "light verb": [
+      "light verb"
+    ],
+    "context": [
+      "context"
+    ],
+    "context_ru": [
+      "context_ru"
+    ],
+    "example_source": [
+      "example_source",
+      "еxаmplе_sourcе",
+      "еxаmplе_sourcе"
+    ],
+    "meaning_ru": [
+      "mеаning_ru"
+    ],
+    "reference": [
+      "rеfеrеncе"
+    ],
+    "notes": [
+      "notеs"
+    ],
+    "comments": [
+      "commеnts"
+    ],
+    "context2": [
+      "context2"
+    ],
+    "context2_ru": [
+      "context2_ru"
+    ],
+    "context3": [
+      "context3"
+    ],
+    "context3_ru": [
+      "context3_ru"
+    ]
+  },
+  "collisionGroups": {
+    "example_source": [
+      "example_source_1",
+      "example_source_2",
+      "example_source_3"
+    ]
+  }
+}
