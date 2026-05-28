@@ -94,19 +94,50 @@ function stripDiacritics(text: string): string {
   return text.normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
 
-export function normalizeForSearch(text: string, translit: boolean): string {
-  const base = stripDiacritics(replaceLookalikes(text.normalize("NFKC")))
-    .toLowerCase()
+function normalizeBase(text: string, translit: boolean): string {
+  const normalized = stripDiacritics(replaceLookalikes(text.normalize("NFKC"))).toLowerCase();
+
+  const base = translit ? stripDiacritics(transliterateCyrillic(normalized)) : normalized;
+
+  return base
+    .replace(/[~`'"’ʼ"“”«»„.,;:!?()[\]{}<>/\\|+=_*&#%^@-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
 
-  if (!translit) {
-    return base;
+function compactForSearch(text: string): string {
+  return text.replace(/\s+/g, "");
+}
+
+function buildComparableForms(text: string, translit: boolean) {
+  const normalized = normalizeBase(text, translit);
+
+  return {
+    normalized,
+    compact: compactForSearch(normalized),
+  };
+}
+
+export function normalizeForSearch(text: string, translit: boolean): string {
+  return buildComparableForms(text, translit).normalized;
+}
+
+export function matchesNormalizedQuery(
+  query: string,
+  target: string,
+  translit: boolean,
+): boolean {
+  const normalizedQuery = buildComparableForms(query, translit);
+  if (!normalizedQuery.normalized) {
+    return true;
   }
 
-  return stripDiacritics(transliterateCyrillic(base))
-    .replace(/\s+/g, " ")
-    .trim();
+  const normalizedTarget = buildComparableForms(target, translit);
+
+  return (
+    normalizedTarget.normalized.includes(normalizedQuery.normalized) ||
+    normalizedTarget.compact.includes(normalizedQuery.compact)
+  );
 }
 
 function getEntryField(entry: Entry, searchRecord: SearchRecord, field: SearchField): string {
@@ -140,6 +171,26 @@ function getEntryField(entry: Entry, searchRecord: SearchRecord, field: SearchFi
           ]),
         ]),
       ]
+        .filter(Boolean)
+        .join(" ");
+  }
+}
+
+function getSearchRecordField(record: SearchRecord, field: SearchField): string {
+  switch (field) {
+    case "infinitive":
+      return record.infinitive;
+    case "stem":
+      return record.stem;
+    case "stem0":
+      return record.stem0;
+    case "stem1":
+      return record.stem1;
+    case "stem2":
+      return record.stem2;
+    case "all":
+    default:
+      return [record.stem, record.infinitive, record.stem0, record.stem1, record.stem2]
         .filter(Boolean)
         .join(" ");
   }
@@ -307,9 +358,7 @@ export function filterEntries(
       return regex.test(rawTarget) || (transliteratedTarget ? regex.test(transliteratedTarget) : false);
     }
 
-    const normalizedQuery = normalizeForSearch(state.query, state.translit);
-    const normalizedTarget = normalizeForSearch(rawTarget, state.translit);
-    return normalizedTarget.includes(normalizedQuery);
+    return matchesNormalizedQuery(state.query, rawTarget, state.translit);
   });
 }
 
@@ -321,20 +370,19 @@ export function buildSuggestions(
   searchIndex: SearchRecord[],
   query: string,
   translit: boolean,
+  field: SearchField,
 ): string[] {
   const normalizedQuery = normalizeForSearch(query, translit);
   if (!normalizedQuery) {
     return searchIndex
       .slice(0, 8)
-      .map((record) => `${record.stem} ${record.infinitive}`.trim());
+      .map((record) => getSearchRecordField(record, field))
+      .filter(Boolean);
   }
 
   return searchIndex
-    .filter((record) =>
-      normalizeForSearch(`${record.stem} ${record.infinitive}`, translit).includes(
-        normalizedQuery,
-      ),
-    )
+    .filter((record) => matchesNormalizedQuery(query, getSearchRecordField(record, field), translit))
     .slice(0, 8)
-    .map((record) => `${record.stem} ${record.infinitive}`.trim());
+    .map((record) => getSearchRecordField(record, field))
+    .filter(Boolean);
 }

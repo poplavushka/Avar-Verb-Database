@@ -65,7 +65,7 @@ export function HomePage({ dataset }: HomePageProps) {
           <p>
             Try queries such as <code>áб</code>, <code>-изе</code>, <code>causative -ab</code>, or a
             Russian gloss like <code>сказать</code>. Use the regex switch for targeted patterns and
-            the transliteration toggle when mixing Cyrillic and Latin input.
+            switch between Cyrillic and Latin search modes when needed.
           </p>
         </article>
         <article className="info-card">

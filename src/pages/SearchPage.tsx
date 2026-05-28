@@ -12,7 +12,6 @@ import { exportEntriesAsCsv, exportEntriesAsXlsx } from "../lib/export";
 import {
   buildSuggestions,
   filterEntries,
-  normalizeForSearch,
   sortEntries,
 } from "../lib/search";
 import type {
@@ -44,9 +43,9 @@ function parseBoolean(value: string | null, fallback = false) {
 function parseState(params: URLSearchParams): SearchState {
   return {
     query: params.get("q") ?? "",
-    field: (params.get("field") as SearchField) || "all",
+    field: (params.get("field") as SearchField) || "stem0",
     useRegex: parseBoolean(params.get("regex")),
-    translit: parseBoolean(params.get("translit"), true),
+    translit: parseBoolean(params.get("translit")),
     verbClass: params.get("class") ?? "",
     verbFormation: params.get("formation") ?? "",
     transitivity: params.get("transitivity") ?? "",
@@ -94,17 +93,9 @@ export function SearchPage({
   const datalistId = useId();
   const state = parseState(searchParams);
   const deferredQuery = useDeferredValue(state.query);
-  const effectiveState =
-    state.field === "all" && state.translit
-      ? {
-          ...state,
-          query: normalizeForSearch(deferredQuery, true),
-          translit: false,
-        }
-      : { ...state, query: deferredQuery };
 
   const filteredEntries = sortEntries(
-    filterEntries(dataset.entries, searchIndexById, effectiveState, bookmarks),
+    filterEntries(dataset.entries, searchIndexById, { ...state, query: deferredQuery }, bookmarks),
     state.sort,
   );
 
@@ -114,7 +105,12 @@ export function SearchPage({
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
-  const suggestions = buildSuggestions(dataset.searchIndex, state.query, state.translit);
+  const suggestions = buildSuggestions(
+    dataset.searchIndex,
+    state.query,
+    state.translit,
+    state.field,
+  );
 
   useEffect(() => {
     if (state.page <= totalPages) {
@@ -231,14 +227,34 @@ export function SearchPage({
               value={state.field}
               onChange={(event) => patchState({ field: event.target.value })}
             >
-              <option value="all">All fields</option>
-              <option value="infinitive">Infinitive</option>
-              <option value="stem">Stem</option>
               <option value="stem0">Stem0</option>
+              <option value="stem">Stem</option>
+              <option value="infinitive">Infinitive</option>
               <option value="stem1">Stem1</option>
               <option value="stem2">Stem2</option>
+              <option value="all">All fields</option>
             </select>
           </label>
+
+          <div className="field-block">
+            <span>Search script</span>
+            <div className="segmented-toggle" role="group" aria-label="Search script">
+              <button
+                type="button"
+                className={!state.translit ? "toggle-chip is-active" : "toggle-chip"}
+                onClick={() => patchState({ translit: false })}
+              >
+                Кириллица
+              </button>
+              <button
+                type="button"
+                className={state.translit ? "toggle-chip is-active" : "toggle-chip"}
+                onClick={() => patchState({ translit: true })}
+              >
+                Латиница
+              </button>
+            </div>
+          </div>
 
           <div className="checkbox-list">
             <label>
@@ -248,14 +264,6 @@ export function SearchPage({
                 onChange={(event) => patchState({ regex: event.target.checked })}
               />
               Use regular expressions
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={state.translit}
-                onChange={(event) => patchState({ translit: event.target.checked })}
-              />
-              Search in Cyrillic and transliteration
             </label>
             <label>
               <input

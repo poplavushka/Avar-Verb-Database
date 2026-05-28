@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 
 import type { Dataset, Entry } from "../lib/types";
@@ -9,12 +10,26 @@ type VerbDetailPageProps = {
   onToggleBookmark: (entryId: string) => void;
 };
 
-function DetailList({ items }: { items: Array<[string, string]> }) {
+type DetailListItem = {
+  label: string;
+  value: ReactNode;
+  plainText?: string;
+};
+
+function hasDetailValue(item: DetailListItem) {
+  if (typeof item.value === "string") {
+    return item.value.trim().length > 0;
+  }
+
+  return (item.plainText ?? "").trim().length > 0;
+}
+
+function DetailList({ items }: { items: DetailListItem[] }) {
   return (
     <dl className="detail-grid">
       {items
-        .filter(([, value]) => value.trim())
-        .map(([label, value]) => (
+        .filter(hasDetailValue)
+        .map(({ label, value }) => (
           <div key={label} className="detail-item">
             <dt>{label}</dt>
             <dd>{value}</dd>
@@ -22,6 +37,10 @@ function DetailList({ items }: { items: Array<[string, string]> }) {
         ))}
     </dl>
   );
+}
+
+function dedupeEntries(entries: Entry[]) {
+  return [...new Map(entries.map((entry) => [entry.id, entry])).values()];
 }
 
 function DefinitionPanel({ entry }: { entry: Entry }) {
@@ -98,6 +117,33 @@ export function VerbDetailPage({
     );
   }
 
+  const formationStemCandidates = dedupeEntries([
+    ...entry.derivedFrom
+      .map((item) => dataset.entries.find((candidate) => candidate.id === item.entryId))
+      .filter((candidate): candidate is Entry => Boolean(candidate)),
+    ...dataset.entries.filter(
+      (candidate) =>
+        candidate.id !== entry.id &&
+        (candidate.lemma.stem === entry.derivation.verbFormationStem ||
+          candidate.grammar.stems.stem0 === entry.derivation.verbFormationStem),
+    ),
+  ]);
+
+  const formationStemValue = formationStemCandidates.length ? (
+    <div className="detail-link-stack">
+      <span>{entry.derivation.verbFormationStem}</span>
+      <div className="link-list">
+        {formationStemCandidates.map((candidate) => (
+          <Link key={candidate.id} to={`/verb/${candidate.id}`} className="link-chip">
+            {candidate.lemma.stem} {candidate.lemma.infinitive}
+          </Link>
+        ))}
+      </div>
+    </div>
+  ) : (
+    entry.derivation.verbFormationStem
+  );
+
   return (
     <div className="page">
       <section className="section-card">
@@ -123,20 +169,20 @@ export function VerbDetailPage({
         </div>
         <DetailList
           items={[
-            ["Theme vowel", entry.grammar.themeVowel],
-            ["Inflectional class", entry.grammar.verbClass],
-            ["Stem0", entry.grammar.stems.stem0],
-            ["Stem1", entry.grammar.stems.stem1],
-            ["Stem2", entry.grammar.stems.stem2],
-            ["Stem type", entry.grammar.stems.stemType],
-            ["Stem notes", entry.grammar.stems.stemNotes],
-            ["Accent paradigm", entry.grammar.accentParadigm],
-            ["Phonological structure", entry.grammar.phonology.structure],
-            [
-              "Phonological structure (unaccented)",
-              entry.grammar.phonology.structureUnaccented,
-            ],
-            ["Agreement slots", entry.grammar.agreementSlot],
+            { label: "Theme vowel", value: entry.grammar.themeVowel },
+            { label: "Inflectional class", value: entry.grammar.verbClass },
+            { label: "Stem0", value: entry.grammar.stems.stem0 },
+            { label: "Stem1", value: entry.grammar.stems.stem1 },
+            { label: "Stem2", value: entry.grammar.stems.stem2 },
+            { label: "Stem type", value: entry.grammar.stems.stemType },
+            { label: "Stem notes", value: entry.grammar.stems.stemNotes },
+            { label: "Accent paradigm", value: entry.grammar.accentParadigm },
+            { label: "Phonological structure", value: entry.grammar.phonology.structure },
+            {
+              label: "Phonological structure (unaccented)",
+              value: entry.grammar.phonology.structureUnaccented,
+            },
+            { label: "Agreement slots", value: entry.grammar.agreementSlot },
           ]}
         />
 
@@ -175,11 +221,21 @@ export function VerbDetailPage({
         </div>
         <DetailList
           items={[
-            ["Verb formation", entry.derivation.verbFormation],
-            ["Verb formation stem", entry.derivation.verbFormationStem],
-            ["POS of formation stem", entry.derivation.posVerbFormationStem],
-            ["Formation stem mismatch", entry.derivation.formationStemDoesNotMatch],
-            ["Variation", entry.derivation.variation],
+            { label: "Verb formation", value: entry.derivation.verbFormation },
+            {
+              label: "Verb formation stem",
+              value: formationStemValue,
+              plainText: entry.derivation.verbFormationStem,
+            },
+            {
+              label: "POS of formation stem",
+              value: entry.derivation.posVerbFormationStem,
+            },
+            {
+              label: "Formation stem mismatch",
+              value: entry.derivation.formationStemDoesNotMatch,
+            },
+            { label: "Variation", value: entry.derivation.variation },
           ]}
         />
         <div className="tag-row">
@@ -231,9 +287,9 @@ export function VerbDetailPage({
         </div>
         <DetailList
           items={[
-            ["Reference", entry.references.reference],
-            ["Notes", entry.references.notes],
-            ["Comments", entry.references.comments],
+            { label: "Reference", value: entry.references.reference },
+            { label: "Notes", value: entry.references.notes },
+            { label: "Comments", value: entry.references.comments },
           ]}
         />
       </section>

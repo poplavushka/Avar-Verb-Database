@@ -296,6 +296,30 @@ code {
   color: var(--text);
 }
 
+.segmented-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.toggle-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--bg-strong);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.toggle-chip.is-active {
+  background: var(--accent-soft);
+  border-color: transparent;
+  color: var(--accent-strong);
+}
+
 .checkbox-list {
   display: grid;
   gap: 0.55rem;
@@ -409,6 +433,11 @@ code {
 .detail-item dd {
   margin: 0;
   line-height: 1.5;
+}
+
+.detail-link-stack {
+  display: grid;
+  gap: 0.65rem;
 }
 
 .principal-parts table {
