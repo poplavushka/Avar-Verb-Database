@@ -14,7 +14,6 @@ function collectTags(entry: Entry): string[] {
     entry.grammar.verbClass ? `class ${entry.grammar.verbClass}` : "",
     entry.derivation.verbFormation,
     ...entry.summary.transitivityValues,
-    ...entry.summary.labilityValues,
     entry.derivation.flags.causative ? "causative" : "",
     entry.derivation.flags.fullReduplication ? "full reduplication" : "",
     entry.derivation.flags.dReduplication ? "d-reduplication" : "",

@@ -57,7 +57,7 @@ export function HomePage({ dataset }: HomePageProps) {
           <p>
             Search across stems, infinitives, stem alternants, definitions, Russian
             glosses, valency frames, and example contexts. Filters cover verb class,
-            derivational type, transitivity, lability, and selected derivational flags.
+            derivational type, transitivity, and selected derivational flags.
           </p>
         </article>
         <article className="info-card">

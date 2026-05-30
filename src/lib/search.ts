@@ -1,25 +1,25 @@
 import type { Entry, SearchField, SearchRecord, SearchState, SortOption } from "./types";
 
-const LOOKALIKE_MAP: Record<string, string> = {
-  А: "A",
-  В: "B",
-  Е: "E",
-  К: "K",
-  М: "M",
-  Н: "H",
-  О: "O",
-  Р: "P",
-  С: "C",
-  Т: "T",
-  У: "Y",
-  Х: "X",
-  а: "a",
-  е: "e",
-  о: "o",
-  р: "p",
-  с: "c",
-  у: "y",
-  х: "x",
+const LATIN_TO_CYRILLIC_LOOKALIKE_MAP: Record<string, string> = {
+  A: "А",
+  B: "В",
+  C: "С",
+  E: "Е",
+  H: "Н",
+  K: "К",
+  M: "М",
+  O: "О",
+  P: "Р",
+  T: "Т",
+  X: "Х",
+  Y: "У",
+  a: "а",
+  c: "с",
+  e: "е",
+  o: "о",
+  p: "р",
+  x: "х",
+  y: "у",
 };
 
 const CYRILLIC_TO_LATIN: Record<string, string> = {
@@ -68,8 +68,31 @@ const CYRILLIC_TO_LATIN: Record<string, string> = {
   ӯ: "u",
 };
 
-function replaceLookalikes(text: string): string {
-  return Array.from(text, (char) => LOOKALIKE_MAP[char] ?? char).join("");
+function isCyrillicChar(char: string | undefined): boolean {
+  return Boolean(char && /\p{Script=Cyrillic}/u.test(char));
+}
+
+function normalizeMixedScriptLookalikes(text: string): string {
+  const characters = Array.from(text);
+
+  return characters.map((char, index) => {
+    const replacement = LATIN_TO_CYRILLIC_LOOKALIKE_MAP[char];
+    if (!replacement) {
+      return char;
+    }
+
+    const previous = characters[index - 1];
+    const next = characters[index + 1];
+    const surroundedByCyrillic =
+      isCyrillicChar(previous) ||
+      isCyrillicChar(next) ||
+      (previous !== undefined &&
+        next !== undefined &&
+        LATIN_TO_CYRILLIC_LOOKALIKE_MAP[previous] &&
+        LATIN_TO_CYRILLIC_LOOKALIKE_MAP[next]);
+
+    return surroundedByCyrillic ? replacement : char;
+  }).join("");
 }
 
 function transliterateCyrillic(text: string): string {
@@ -95,7 +118,9 @@ function stripDiacritics(text: string): string {
 }
 
 function normalizeBase(text: string, translit: boolean): string {
-  const normalized = stripDiacritics(replaceLookalikes(text.normalize("NFKC"))).toLowerCase();
+  const normalized = normalizeMixedScriptLookalikes(
+    stripDiacritics(text.normalize("NFKC")),
+  ).toLowerCase();
 
   const base = translit ? stripDiacritics(transliterateCyrillic(normalized)) : normalized;
 
@@ -337,10 +362,6 @@ export function filterEntries(
       state.transitivity &&
       !entry.summary.transitivityValues.includes(state.transitivity)
     ) {
-      return false;
-    }
-
-    if (state.lability && !entry.summary.labilityValues.includes(state.lability)) {
       return false;
     }
 

@@ -57,7 +57,7 @@ function DefinitionPanel({ entry }: { entry: Entry }) {
                 {definition.idDefinition ? `Definition ${definition.idDefinition}` : "Definition"}
               </h3>
               <span className="definition-flags">
-                {[definition.transitivity, definition.lability].filter(Boolean).join(" · ")}
+                {[definition.transitivity].filter(Boolean).join(" · ")}
               </span>
             </div>
             <p>{definition.definition}</p>

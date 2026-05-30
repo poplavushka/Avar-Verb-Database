@@ -49,7 +49,6 @@ function parseState(params: URLSearchParams): SearchState {
     verbClass: params.get("class") ?? "",
     verbFormation: params.get("formation") ?? "",
     transitivity: params.get("transitivity") ?? "",
-    lability: params.get("lability") ?? "",
     onlyBookmarks: parseBoolean(params.get("bookmarks")),
     onlyDerived: parseBoolean(params.get("derived")),
     onlyWithChildren: parseBoolean(params.get("children")),
@@ -337,21 +336,6 @@ export function SearchPage({
             >
               <option value="">Any</option>
               {dataset.filters.transitivity.values?.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="field-block">
-            <span>Lability</span>
-            <select
-              value={state.lability}
-              onChange={(event) => patchState({ lability: event.target.value })}
-            >
-              <option value="">Any</option>
-              {dataset.filters.lability.values?.map((value) => (
                 <option key={value} value={value}>
                   {value}
                 </option>

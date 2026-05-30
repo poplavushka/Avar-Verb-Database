@@ -143,7 +143,6 @@ export type SearchState = {
   verbClass: string;
   verbFormation: string;
   transitivity: string;
-  lability: string;
   onlyBookmarks: boolean;
   onlyDerived: boolean;
   onlyWithChildren: boolean;
