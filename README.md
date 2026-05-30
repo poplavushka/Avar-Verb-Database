@@ -34,21 +34,3 @@ This regenerates:
 ```bash
 npm run build
 ```
-
-## GitHub Pages
-
-The repository includes `.github/workflows/deploy.yml`.
-
-After pushing to GitHub:
-
-1. Open repository settings.
-2. Go to `Pages`.
-3. Set source to `GitHub Actions` if it is not already selected.
-4. Push to `main` or `master`, or run the workflow manually.
-
-The workflow injects:
-
-- `VITE_REPO_URL`
-- `VITE_REPO_BRANCH`
-
-so the homepage can link back to the raw CSV file in the repository.
