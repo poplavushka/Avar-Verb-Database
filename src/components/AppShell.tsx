@@ -18,7 +18,6 @@ export function AppShell({ children, theme, onToggleTheme }: AppShellProps) {
       <header className="topbar">
         <div>
           <Link to="/" className="brand-mark">
-            <span className="brand-kicker">Static dictionary</span>
             <span className="brand-title">{appConfig.title}</span>
           </Link>
         </div>

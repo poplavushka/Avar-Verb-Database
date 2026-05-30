@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 
-import type { Dataset, Entry } from "../lib/types";
+import type { Dataset, Entry, ExampleContext } from "../lib/types";
 import { BookmarkButton } from "../components/BookmarkButton";
 
 type VerbDetailPageProps = {
@@ -43,6 +43,59 @@ function dedupeEntries(entries: Entry[]) {
   return [...new Map(entries.map((entry) => [entry.id, entry])).values()];
 }
 
+function expandExampleStem(text: string, entry: Entry) {
+  const stem = entry.grammar.stems.stem0 || entry.lemma.stem;
+  return text.replaceAll("~", stem);
+}
+
+function renderTextWithExampleHighlights(
+  text: string,
+  contexts: ExampleContext[],
+  entry: Entry,
+) {
+  const exampleTexts = [...new Set(contexts.map((context) => context.text).filter(Boolean))].sort(
+    (first, second) => second.length - first.length,
+  );
+  let segments: { text: string; isExample: boolean }[] = [{ text, isExample: false }];
+
+  for (const exampleText of exampleTexts) {
+    segments = segments.flatMap((segment) => {
+      if (segment.isExample || !segment.text.includes(exampleText)) {
+        return [segment];
+      }
+
+      const parts = segment.text.split(exampleText);
+      return parts.flatMap((part, index) => {
+        const nextSegments: { text: string; isExample: boolean }[] = [];
+        if (part) {
+          nextSegments.push({ text: part, isExample: false });
+        }
+        if (index < parts.length - 1) {
+          nextSegments.push({ text: exampleText, isExample: true });
+        }
+        return nextSegments;
+      });
+    });
+  }
+
+  return segments.map((segment, index) => {
+    const expandedText = expandExampleStem(segment.text, entry);
+    if (!segment.isExample) {
+      return expandedText;
+    }
+
+    return (
+      <span key={`${segment.text}-${index}`} className="definition-example-inline">
+        <em>{expandedText}</em>
+      </span>
+    );
+  });
+}
+
+function getEntryContexts(entry: Entry) {
+  return entry.definitions.flatMap((definition) => definition.contexts);
+}
+
 function DefinitionPanel({ entry }: { entry: Entry }) {
   return (
     <section className="section-card">
@@ -60,7 +113,13 @@ function DefinitionPanel({ entry }: { entry: Entry }) {
                 {[definition.transitivity].filter(Boolean).join(" · ")}
               </span>
             </div>
-            <p>{definition.definition}</p>
+            <p className="definition-text">
+              {renderTextWithExampleHighlights(
+                definition.definition,
+                definition.contexts,
+                entry,
+              )}
+            </p>
             {definition.meaningRu ? <p className="card-translation">{definition.meaningRu}</p> : null}
             {Object.keys(definition.frameSlots).length ? (
               <div className="frame-slots">
@@ -75,11 +134,12 @@ function DefinitionPanel({ entry }: { entry: Entry }) {
               <div className="context-stack">
                 {definition.contexts.map((context) => (
                   <blockquote key={`${definition.id}-${context.slot}`} className="context-card">
-                    <p>{context.text || "No example text."}</p>
+                    <p className="context-text">
+                      <em>
+                        {context.text ? expandExampleStem(context.text, entry) : "No example text."}
+                      </em>
+                    </p>
                     {context.translationRu ? <footer>{context.translationRu}</footer> : null}
-                    {context.exampleSource ? (
-                      <cite>{context.exampleSource}</cite>
-                    ) : null}
                   </blockquote>
                 ))}
               </div>
@@ -160,7 +220,9 @@ export function VerbDetailPage({
             onToggle={() => onToggleBookmark(entry.id)}
           />
         </div>
-        <p className="source-line">{entry.lemma.source}</p>
+        <p className="source-line">
+          {renderTextWithExampleHighlights(entry.lemma.source, getEntryContexts(entry), entry)}
+        </p>
       </section>
 
       <section className="section-card">
@@ -288,8 +350,6 @@ export function VerbDetailPage({
         <DetailList
           items={[
             { label: "Reference", value: entry.references.reference },
-            { label: "Notes", value: entry.references.notes },
-            { label: "Comments", value: entry.references.comments },
           ]}
         />
       </section>

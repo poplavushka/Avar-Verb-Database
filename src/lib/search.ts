@@ -13,6 +13,8 @@ const LATIN_TO_CYRILLIC_LOOKALIKE_MAP: Record<string, string> = {
   T: "Т",
   X: "Х",
   Y: "У",
+  I: "І",
+  "1": "І",
   a: "а",
   c: "с",
   e: "е",
@@ -23,22 +25,51 @@ const LATIN_TO_CYRILLIC_LOOKALIKE_MAP: Record<string, string> = {
 };
 
 const CYRILLIC_TO_LATIN: Record<string, string> = {
+  цӏцӏ: "c':",
+  ціці: "c':",
+  чӏчӏ: "č':",
+  чічі: "č':",
+  кӏкӏ: "k':",
+  кікі: "k':",
+  сс: "sː",
+  лълъ: "ɬː",
+  хх: "χː",
+  цӏ: "c'",
+  ці: "c'",
+  чӏ: "č'",
+  чі: "č'",
+  цц: "cː",
+  чч: "čː",
+  кк: "kː",
+  тӏ: "t'",
+  ті: "t'",
+  кӏ: "k'",
+  кі: "k'",
+  гӏ: "ʕ",
+  гі: "ʕ",
+  хӏ: "ħ",
+  хі: "ħ",
+  лӏ: "ƛ",
+  лі: "ƛ",
   а: "a",
   б: "b",
   в: "v",
   г: "g",
-  гь: "gh",
-  гъ: "g",
+  гь: "h",
+  гъ: "ʁ",
   д: "d",
   е: "e",
-  ё: "e",
-  ж: "zh",
+  ж: "ž",
   з: "z",
   и: "i",
-  й: "i",
+  й: "j",
+  я: "ja",
+  ё: "jo",
+  ю: "ju",
+  къ: "q'",
+  кь: "ƛ'",
   к: "k",
-  къ: "q",
-  кь: "k",
+  лъ: "ɬ",
   л: "l",
   м: "m",
   н: "n",
@@ -49,19 +80,18 @@ const CYRILLIC_TO_LATIN: Record<string, string> = {
   т: "t",
   у: "u",
   ф: "f",
-  х: "h",
-  хъ: "h",
-  ц: "ts",
-  ч: "ch",
-  ш: "sh",
-  щ: "shch",
+  хъ: "q",
+  хь: "x",
+  х: "χ",
+  ц: "c",
+  ч: "č",
+  ш: "š",
+  щ: "š:",
   ы: "y",
   э: "e",
-  ю: "yu",
-  я: "ya",
-  ӏ: "1",
-  І: "1",
-  і: "1",
+  ӏ: "'",
+  І: "'",
+  і: "'",
   қ: "q",
   ғ: "gh",
   ҳ: "h",
@@ -98,12 +128,17 @@ function normalizeMixedScriptLookalikes(text: string): string {
 function transliterateCyrillic(text: string): string {
   const prepared = text.toLowerCase();
   let output = "";
+  const transliterationKeys = Object.keys(CYRILLIC_TO_LATIN).sort(
+    (left, right) => right.length - left.length,
+  );
 
   for (let index = 0; index < prepared.length; index += 1) {
-    const digraph = prepared.slice(index, index + 2);
-    if (CYRILLIC_TO_LATIN[digraph]) {
-      output += CYRILLIC_TO_LATIN[digraph];
-      index += 1;
+    const matchedKey = transliterationKeys.find((key) =>
+      prepared.startsWith(key, index),
+    );
+    if (matchedKey) {
+      output += CYRILLIC_TO_LATIN[matchedKey];
+      index += matchedKey.length - 1;
       continue;
     }
 
@@ -114,7 +149,7 @@ function transliterateCyrillic(text: string): string {
 }
 
 function stripDiacritics(text: string): string {
-  return text.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  return text.normalize("NFD").replace(/[\u0300\u0301]/g, "").normalize("NFC");
 }
 
 function normalizeBase(text: string, translit: boolean): string {
@@ -122,16 +157,29 @@ function normalizeBase(text: string, translit: boolean): string {
     stripDiacritics(text.normalize("NFKC")),
   ).toLowerCase();
 
-  const base = translit ? stripDiacritics(transliterateCyrillic(normalized)) : normalized;
+  const base = translit
+    ? stripDiacritics(transliterateCyrillic(normalized)).replace(/[’ʼ‘`]/g, "'")
+    : normalized;
+  const separatorPattern = translit
+    ? /[~"“”«»„.,;!?()[\]{}<>/\\|+=_*&#%^@-]+/g
+    : /[~`'"’ʼ"“”«»„.,;:!?()[\]{}<>/\\|+=_*&#%^@-]+/g;
 
   return base
-    .replace(/[~`'"’ʼ"“”«»„.,;:!?()[\]{}<>/\\|+=_*&#%^@-]+/g, " ")
+    .replace(separatorPattern, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
 
 function compactForSearch(text: string): string {
   return text.replace(/\s+/g, "");
+}
+
+function isFieldScopedPrefixSearch(field: SearchField): boolean {
+  return field !== "all";
+}
+
+function startsWithToken(text: string, query: string): boolean {
+  return text.split(" ").some((token) => token.startsWith(query));
 }
 
 function buildComparableForms(text: string, translit: boolean) {
@@ -151,18 +199,14 @@ export function matchesNormalizedQuery(
   query: string,
   target: string,
   translit: boolean,
+  field: SearchField = "all",
 ): boolean {
-  const normalizedQuery = buildComparableForms(query, translit);
-  if (!normalizedQuery.normalized) {
-    return true;
+  const rank = getMatchRank(query, target, translit);
+  if (rank === null) {
+    return false;
   }
 
-  const normalizedTarget = buildComparableForms(target, translit);
-
-  return (
-    normalizedTarget.normalized.includes(normalizedQuery.normalized) ||
-    normalizedTarget.compact.includes(normalizedQuery.compact)
-  );
+  return isFieldScopedPrefixSearch(field) ? rank <= 3 : true;
 }
 
 function getEntryField(entry: Entry, searchRecord: SearchRecord, field: SearchField): string {
@@ -285,8 +329,94 @@ function compareText(left: string, right: string): number {
   return left.localeCompare(right, "ru");
 }
 
-export function sortEntries(entries: Entry[], sort: SortOption): Entry[] {
+function getMatchRank(query: string, target: string, translit: boolean): number | null {
+  const normalizedQuery = buildComparableForms(query, translit);
+  if (!normalizedQuery.normalized) {
+    return 0;
+  }
+
+  const normalizedTarget = buildComparableForms(target, translit);
+
+  if (
+    normalizedTarget.normalized === normalizedQuery.normalized ||
+    normalizedTarget.compact === normalizedQuery.compact
+  ) {
+    return 0;
+  }
+
+  if (normalizedTarget.normalized.startsWith(normalizedQuery.normalized)) {
+    return 1;
+  }
+
+  if (normalizedTarget.compact.startsWith(normalizedQuery.compact)) {
+    return 2;
+  }
+
+  if (startsWithToken(normalizedTarget.normalized, normalizedQuery.normalized)) {
+    return 3;
+  }
+
+  if (normalizedTarget.normalized.includes(normalizedQuery.normalized)) {
+    return 4;
+  }
+
+  if (normalizedTarget.compact.includes(normalizedQuery.compact)) {
+    return 5;
+  }
+
+  return null;
+}
+
+function compareBySearchRelevance(
+  left: Entry,
+  right: Entry,
+  searchIndexById: Record<string, SearchRecord>,
+  state: Pick<SearchState, "query" | "field" | "translit" | "useRegex">,
+): number {
+  if (!state.query.trim() || state.useRegex) {
+    return 0;
+  }
+
+  const leftRecord = searchIndexById[left.id];
+  const rightRecord = searchIndexById[right.id];
+  if (!leftRecord || !rightRecord) {
+    return 0;
+  }
+
+  const leftTarget = getEntryField(left, leftRecord, state.field);
+  const rightTarget = getEntryField(right, rightRecord, state.field);
+  const leftRank = getMatchRank(state.query, leftTarget, state.translit);
+  const rightRank = getMatchRank(state.query, rightTarget, state.translit);
+
+  const leftResolvedRank = leftRank ?? Number.POSITIVE_INFINITY;
+  const rightResolvedRank = rightRank ?? Number.POSITIVE_INFINITY;
+  if (leftResolvedRank !== rightResolvedRank) {
+    return leftResolvedRank - rightResolvedRank;
+  }
+
+  const leftComparable = buildComparableForms(leftTarget, state.translit);
+  const rightComparable = buildComparableForms(rightTarget, state.translit);
+  if (leftComparable.compact.length !== rightComparable.compact.length) {
+    return leftComparable.compact.length - rightComparable.compact.length;
+  }
+
+  return compareText(left.lemma.stem, right.lemma.stem);
+}
+
+export function sortEntries(
+  entries: Entry[],
+  sort: SortOption,
+  searchIndexById?: Record<string, SearchRecord>,
+  state?: Pick<SearchState, "query" | "field" | "translit" | "useRegex">,
+): Entry[] {
   return [...entries].sort((left, right) => {
+    if (searchIndexById && state) {
+      const relevanceComparison = compareBySearchRelevance(left, right, searchIndexById, state);
+      if (relevanceComparison !== 0) {
+        return relevanceComparison;
+      }
+    }
+
     if (sort === "verbClass") {
       return (
         compareText(left.grammar.verbClass, right.grammar.verbClass) ||
@@ -379,7 +509,7 @@ export function filterEntries(
       return regex.test(rawTarget) || (transliteratedTarget ? regex.test(transliteratedTarget) : false);
     }
 
-    return matchesNormalizedQuery(state.query, rawTarget, state.translit);
+    return matchesNormalizedQuery(state.query, rawTarget, state.translit, state.field);
   });
 }
 
@@ -402,8 +532,23 @@ export function buildSuggestions(
   }
 
   return searchIndex
-    .filter((record) => matchesNormalizedQuery(query, getSearchRecordField(record, field), translit))
+    .map((record) => ({
+      value: getSearchRecordField(record, field),
+      rank: getMatchRank(query, getSearchRecordField(record, field), translit),
+    }))
+    .filter(
+      (record) =>
+        record.rank !== null &&
+        (!isFieldScopedPrefixSearch(field) || (record.rank ?? Number.POSITIVE_INFINITY) <= 3),
+    )
+    .sort((left, right) => {
+      if (left.rank !== right.rank) {
+        return (left.rank ?? Number.POSITIVE_INFINITY) - (right.rank ?? Number.POSITIVE_INFINITY);
+      }
+
+      return left.value.localeCompare(right.value, "ru");
+    })
     .slice(0, 8)
-    .map((record) => getSearchRecordField(record, field))
+    .map((record) => record.value)
     .filter(Boolean);
 }

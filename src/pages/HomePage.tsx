@@ -17,9 +17,8 @@ export function HomePage({ dataset }: HomePageProps) {
           <p className="eyebrow">Morphology, derivation, valency, examples</p>
           <h1>Avar Verbal Database</h1>
           <p className="hero-text">
-            A static, searchable interface for a morphologically annotated database of Avar
-            verbs. The site groups individual CSV rows into lexical entries, keeps
-            derivational links, and exposes grammatical and syntactic filters.
+            Welcome to Avar Verbal Database. It contains information about the morphology,
+            valency, and derivation of Avar verbs.
           </p>
           <div className="hero-actions">
             <Link to="/dictionary" className="primary-action">
@@ -55,17 +54,16 @@ export function HomePage({ dataset }: HomePageProps) {
         <article className="info-card">
           <h2>What can be searched</h2>
           <p>
-            Search across stems, infinitives, stem alternants, definitions, Russian
-            glosses, valency frames, and example contexts. Filters cover verb class,
+            Search across stems, infinitives, definitions, Russian glosses,
+            valency frames, and example contexts. Filters cover verb class,
             derivational type, transitivity, and selected derivational flags.
           </p>
         </article>
         <article className="info-card">
           <h2>How to use</h2>
           <p>
-            Try queries such as <code>áб</code>, <code>-изе</code>, <code>causative -ab</code>, or a
-            Russian gloss like <code>сказать</code>. Use the regex switch for targeted patterns and
-            switch between Cyrillic and Latin search modes when needed.
+            Search is available in Cyrillic and Latin transliteration, by Russian
+            translation, and with regular expressions.
           </p>
         </article>
         <article className="info-card">

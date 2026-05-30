@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 
+import { normalizeForSearch } from "../lib/search";
 import type { Entry } from "../lib/types";
 import { BookmarkButton } from "./BookmarkButton";
 
 type ResultCardProps = {
   entry: Entry;
   bookmarked: boolean;
+  translit: boolean;
   onToggleBookmark: () => void;
 };
 
@@ -24,7 +26,11 @@ function collectTags(entry: Entry): string[] {
   return [...new Set(tags.filter(Boolean))].slice(0, 8);
 }
 
-export function ResultCard({ entry, bookmarked, onToggleBookmark }: ResultCardProps) {
+function formatVerbForm(value: string, translit: boolean) {
+  return translit ? normalizeForSearch(value, true) : value;
+}
+
+export function ResultCard({ entry, bookmarked, translit, onToggleBookmark }: ResultCardProps) {
   const firstDefinition = entry.definitions[0];
   const contextCount = entry.definitions.reduce(
     (sum, definition) => sum + definition.contexts.length,
@@ -35,8 +41,8 @@ export function ResultCard({ entry, bookmarked, onToggleBookmark }: ResultCardPr
     <article className="result-card">
       <div className="result-card-header">
         <div>
-          <p className="card-stem">{entry.lemma.stem}</p>
-          <p className="card-infinitive">{entry.lemma.infinitive}</p>
+          <p className="card-stem">{formatVerbForm(entry.lemma.stem, translit)}</p>
+          <p className="card-infinitive">{formatVerbForm(entry.lemma.infinitive, translit)}</p>
         </div>
         <BookmarkButton active={bookmarked} onToggle={onToggleBookmark} />
       </div>

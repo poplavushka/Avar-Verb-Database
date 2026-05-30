@@ -32,6 +32,57 @@ type SearchPageProps = {
 };
 
 const PAGE_SIZE = 24;
+const CYRILLIC_SYMBOLS = [
+  "ӏ",
+  "І",
+  "гь",
+  "гъ",
+  "къ",
+  "кь",
+  "хъ",
+  "гІ",
+  "кІ",
+  "хІ",
+  "тІ",
+  "цІ",
+  "чІ",
+  "лъ",
+];
+const LATIN_SYMBOLS = [
+  "'",
+  ":",
+  "ː",
+  "č",
+  "š",
+  "ž",
+  "ɬ",
+  "ƛ",
+  "ħ",
+  "ʕ",
+  "χ",
+  "ʁ",
+  "q",
+  "h",
+  "q'",
+  "k'",
+  "t'",
+  "c'",
+  "č'",
+  "c':",
+  "č':",
+  "k':",
+  "ƛ'",
+  "sː",
+  "ɬː",
+  "χː",
+  "cː",
+  "čː",
+  "kː",
+  "š:",
+  "ja",
+  "jo",
+  "ju",
+];
 
 function parseBoolean(value: string | null, fallback = false) {
   if (value === null) {
@@ -88,14 +139,20 @@ export function SearchPage({
 }: SearchPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isPending, setIsPending] = useState(false);
+  const [isSymbolKeyboardOpen, setIsSymbolKeyboardOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const datalistId = useId();
   const state = parseState(searchParams);
-  const deferredQuery = useDeferredValue(state.query);
+  const lastUrlQueryRef = useRef(state.query);
+  const [queryDraft, setQueryDraft] = useState(state.query);
+  const deferredQuery = useDeferredValue(queryDraft);
+  const specialSymbols = state.translit ? LATIN_SYMBOLS : CYRILLIC_SYMBOLS;
 
   const filteredEntries = sortEntries(
     filterEntries(dataset.entries, searchIndexById, { ...state, query: deferredQuery }, bookmarks),
     state.sort,
+    searchIndexById,
+    { ...state, query: deferredQuery },
   );
 
   const totalPages = Math.max(1, Math.ceil(filteredEntries.length / PAGE_SIZE));
@@ -106,10 +163,42 @@ export function SearchPage({
   );
   const suggestions = buildSuggestions(
     dataset.searchIndex,
-    state.query,
+    deferredQuery,
     state.translit,
     state.field,
   );
+
+  useEffect(() => {
+    if (queryDraft === state.query) {
+      setIsPending(false);
+    }
+  }, [queryDraft, state.query]);
+
+  useEffect(() => {
+    if (lastUrlQueryRef.current === state.query) {
+      return;
+    }
+
+    lastUrlQueryRef.current = state.query;
+    setQueryDraft(state.query);
+  }, [state.query]);
+
+  useEffect(() => {
+    if (queryDraft === state.query) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      startTransition(() => {
+        setSearchParams(updateSearchParams(searchParams, { q: queryDraft, page: 1 }), {
+          replace: true,
+        });
+        lastUrlQueryRef.current = queryDraft;
+      });
+    }, 160);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [queryDraft, searchParams, setSearchParams, state.query]);
 
   useEffect(() => {
     if (state.page <= totalPages) {
@@ -159,6 +248,7 @@ export function SearchPage({
   function patchState(patch: Record<string, string | number | boolean | null>) {
     setIsPending(true);
     const next = updateSearchParams(searchParams, {
+      q: queryDraft,
       ...patch,
       page: patch.page ?? (Object.hasOwn(patch, "page") ? patch.page : 1),
     });
@@ -166,6 +256,23 @@ export function SearchPage({
     startTransition(() => {
       setSearchParams(next);
       window.requestAnimationFrame(() => setIsPending(false));
+    });
+  }
+
+  function insertSearchSymbol(symbol: string) {
+    const input = inputRef.current;
+    const selectionStart = input?.selectionStart ?? queryDraft.length;
+    const selectionEnd = input?.selectionEnd ?? selectionStart;
+    const nextQuery =
+      queryDraft.slice(0, selectionStart) + symbol + queryDraft.slice(selectionEnd);
+
+    setQueryDraft(nextQuery);
+    setIsPending(true);
+
+    window.requestAnimationFrame(() => {
+      const cursorPosition = selectionStart + symbol.length;
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(cursorPosition, cursorPosition);
     });
   }
 
@@ -182,7 +289,7 @@ export function SearchPage({
     <div className="page">
       <section className="search-hero">
         <div>
-          <p className="eyebrow">Keyboard: / or Ctrl/Cmd+K to focus, Alt+←/→ to paginate</p>
+          <p className="eyebrow">Avar verbal database</p>
           <h1>Dictionary search</h1>
         </div>
         <div className="export-row">
@@ -208,10 +315,13 @@ export function SearchPage({
             <input
               ref={inputRef}
               type="search"
-              value={state.query}
+              value={queryDraft}
               list={datalistId}
               placeholder="stem, gloss, valency frame, context"
-              onChange={(event) => patchState({ q: event.target.value })}
+              onChange={(event) => {
+                setQueryDraft(event.target.value);
+                setIsPending(true);
+              }}
             />
             <datalist id={datalistId}>
               {suggestions.map((suggestion) => (
@@ -220,8 +330,34 @@ export function SearchPage({
             </datalist>
           </label>
 
+          <div className="special-keyboard">
+            <button
+              type="button"
+              className="keyboard-toggle"
+              aria-expanded={isSymbolKeyboardOpen}
+              onClick={() => setIsSymbolKeyboardOpen((isOpen) => !isOpen)}
+            >
+              {isSymbolKeyboardOpen ? "hide keyboard" : "keyboard"}
+            </button>
+            {isSymbolKeyboardOpen ? (
+              <div className="symbol-grid" aria-label="Special search symbols">
+                {specialSymbols.map((symbol) => (
+                  <button
+                    key={symbol}
+                    type="button"
+                    className="symbol-key"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => insertSearchSymbol(symbol)}
+                  >
+                    {symbol}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
           <label className="field-block">
-            <span>Search field</span>
+            <span>Filters</span>
             <select
               value={state.field}
               onChange={(event) => patchState({ field: event.target.value })}
@@ -243,14 +379,14 @@ export function SearchPage({
                 className={!state.translit ? "toggle-chip is-active" : "toggle-chip"}
                 onClick={() => patchState({ translit: false })}
               >
-                Кириллица
+                Cyrillic
               </button>
               <button
                 type="button"
                 className={state.translit ? "toggle-chip is-active" : "toggle-chip"}
                 onClick={() => patchState({ translit: true })}
               >
-                Латиница
+                Latin
               </button>
             </div>
           </div>
@@ -270,7 +406,7 @@ export function SearchPage({
                 checked={state.onlyBookmarks}
                 onChange={(event) => patchState({ bookmarks: event.target.checked })}
               />
-              Only bookmarks
+              Saved entries
             </label>
             <label>
               <input
@@ -278,7 +414,7 @@ export function SearchPage({
                 checked={state.onlyDerived}
                 onChange={(event) => patchState({ derived: event.target.checked })}
               />
-              Only derived verbs
+              Derived verbs
             </label>
             <label>
               <input
@@ -286,7 +422,7 @@ export function SearchPage({
                 checked={state.onlyWithChildren}
                 onChange={(event) => patchState({ children: event.target.checked })}
               />
-              Only verbs with outgoing derivatives
+              Verbs with derivatives
             </label>
             <label>
               <input
@@ -294,7 +430,7 @@ export function SearchPage({
                 checked={state.onlyCausative}
                 onChange={(event) => patchState({ causative: event.target.checked })}
               />
-              Only causative-marked entries
+              Causatives
             </label>
           </div>
 
@@ -359,12 +495,12 @@ export function SearchPage({
           <div className="results-toolbar">
             <div>
               <strong>{filteredEntries.length}</strong> entries found
-              <span className="muted-block">
+              <span className="muted-block result-page-summary">
                 {searchSummary.definitions} definitions · {searchSummary.contexts} examples on this page
               </span>
             </div>
             <div className="share-box">
-              <span className="muted-block">Shareable URL updates automatically.</span>
+              <span className="muted-block">You can share your search results.</span>
               {isPending ? <span className="loading-dot">Updating…</span> : null}
             </div>
           </div>
@@ -376,6 +512,7 @@ export function SearchPage({
                   key={entry.id}
                   entry={entry}
                   bookmarked={bookmarks.has(entry.id)}
+                  translit={state.translit}
                   onToggleBookmark={() => onToggleBookmark(entry.id)}
                 />
               ))}
