@@ -70,7 +70,7 @@ export function HomePage({ dataset }: HomePageProps) {
         <article className="info-card citation-card">
           <h2>Citation</h2>
           <p>
-            <cite>{appConfig.title}</cite>. 2026. [Database].{" "}
+            Khayaleeva &amp; Fayzeeva. 2026. <cite>{appConfig.title}</cite>. [Database].{" "}
             <a href={citationUrl}>{citationUrl}</a>
           </p>
         </article>
