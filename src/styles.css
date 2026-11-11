@@ -262,6 +262,15 @@ code {
   gap: 1rem;
 }
 
+.citation-card {
+  grid-column: 1 / -1;
+}
+
+.citation-card a {
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+}
+
 .info-card,
 .section-card,
 .search-hero,

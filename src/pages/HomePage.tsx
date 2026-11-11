@@ -9,6 +9,7 @@ type HomePageProps = {
 
 export function HomePage({ dataset }: HomePageProps) {
   const githubCsvUrl = getGithubCsvUrl();
+  const citationUrl = appConfig.repositoryUrl || "https://github.com/poplavushka/Avar-Verb-Database";
 
   return (
     <div className="page page-home">
@@ -66,21 +67,11 @@ export function HomePage({ dataset }: HomePageProps) {
             translation, and with regular expressions.
           </p>
         </article>
-        <article className="info-card">
+        <article className="info-card citation-card">
           <h2>Citation</h2>
           <p>
-            Cite the database as <em>{appConfig.title}</em>, static interface generated from the
-            annotated CSV dataset. Include the repository URL and generation date from the site
-            metadata when publishing results.
-          </p>
-        </article>
-        <article className="info-card">
-          <h2>Recently updated</h2>
-          <p>
-            The current dataset was generated on{" "}
-            <strong>{new Date(dataset.meta.generatedAt).toLocaleString()}</strong>. Row-level
-            version history is not available in the source CSV, so no finer update feed is
-            shown yet.
+            <cite>{appConfig.title}</cite>. 2026. [Database].{" "}
+            <a href={citationUrl}>{citationUrl}</a>
           </p>
         </article>
       </section>
